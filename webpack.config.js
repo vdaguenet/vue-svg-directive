@@ -1,40 +1,42 @@
 var webpack = require('webpack')
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+var path = require('path')
 
 module.exports = {
+  mode: 'production',
   entry: './index.js',
   output: {
-    path       : './dist',
-    filename   : 'vue-svg-directive.js',
-    library : 'svg',
-    libraryTarget: "umd"
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'vue-svg-directive.js',
+    library: 'svg',
+    libraryTarget: 'umd'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         exclude: '/node_modules/'
       }
     ]
   },
-  // example: if you wish to apply custom babel options
-  // instead of using vue-loader's default:
-  babel: {
-    presets: ['es2015', 'stage-0'],
-    plugins: ['transform-runtime']
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          compress: {
+            warnings: false
+          }
+        }
+      })
+    ],
+    occurrenceOrder: true
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: '"production"'
+      }
+    })
+  ]
 }
-
-module.exports.plugins = [
-  new webpack.DefinePlugin({
-    'process.env': {
-      NODE_ENV: '"production"'
-    }
-  }),
-  new webpack.optimize.UglifyJsPlugin({
-    compress: {
-      warnings: false
-    }
-  }),
-  new webpack.optimize.OccurenceOrderPlugin()
-]
