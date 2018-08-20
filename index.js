@@ -24,7 +24,9 @@ export default {
                 }
 
                 use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `${opts.sprites}#${sprite}`);
-                use.setAttributeNS(null, scope, '');
+                if (scope !== null) {
+                  use.setAttributeNS(null, scope, '');
+                }
 
                 if (el.tagName !== 'svg') {
                     svg.setAttributeNS(null, scope, '');
